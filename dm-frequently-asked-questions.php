@@ -5,7 +5,7 @@ Plugin Name: Frequently Asked Questions
 Plugin URI: http://www.designmissoula.com/
 Description: Used by Millions to make WordPress better.
 Author: Bradford Knowlton
-Version: 2.2.1
+Version: 2.3.1
 Author URI: http://bradknowlton.com/
 GitHub Plugin URI: https://github.com/DesignMissoula/DM-frequently-asked-questions
 GitHub Branch: master
@@ -32,7 +32,7 @@ function register_cpt_frequently_asked_question() {
 	$args = array(
 		'labels' => $labels,
 		'hierarchical' => false,
-		'supports' => array( 'title', 'editor', 'revisions' ),
+		'supports' => array( 'title', 'editor', 'revisions', 'page-attributes' ),
 		'taxonomies' => array( 'frequently_asked_categories' ),
 		'public' => true,
 		'show_ui' => true,
@@ -82,6 +82,9 @@ function register_cpt_frequently_asked_question() {
 	
 	
 	function frequently_asked_question_func( $atts ) {
+		global $kkStarRatings_obj;
+		remove_filter('the_content', array($kkStarRatings_obj, 'filter'));
+	
 	    $a = shortcode_atts( array(
 	        'category' => '',
 	    ), $atts );
@@ -91,6 +94,7 @@ function register_cpt_frequently_asked_question() {
 		  'post_type' => 'faq',
 		  'post_status' => 'publish',
 		  'posts_per_page' => -1,
+		  'orderby' => 'menu_order'
 		  // 'caller_get_posts'=> 1
 		);
 		$my_query = null;
@@ -99,7 +103,7 @@ function register_cpt_frequently_asked_question() {
 		  $return = '<div id="accordion">';
 		  while ($my_query->have_posts()) : $my_query->the_post(); 
 		  	$return .=  "<h3>".get_the_title()."</h3>";
-		  	$return .=  "<div class='clearfix'>".get_the_content()."</div>";
+		  	$return .=  "<div class='clearfix'>".get_the_content_with_formatting()."</div>";
 		  
 		    endwhile;
 		    $return .= '</div>';
@@ -130,4 +134,9 @@ function faq_scripts_method() {
 
 add_action('wp_enqueue_scripts', 'faq_scripts_method');
 
-
+function get_the_content_with_formatting ($more_link_text = '(more...)', $stripteaser = 0, $more_file = '') {
+	$content = get_the_content($more_link_text, $stripteaser, $more_file);
+	$content = apply_filters('the_content', $content);
+	$content = str_replace(']]>', ']]&gt;', $content);
+	return $content;
+}
