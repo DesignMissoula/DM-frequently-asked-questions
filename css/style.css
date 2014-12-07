@@ -1,0 +1,24 @@
+
+div#accordion {
+	margin-bottom: 2em;
+}
+
+h3.ui-accordion-header {
+	line-height: 1.25em;
+	border-bottom: 1px solid #666;
+	padding: 4px 0px;
+	cursor: pointer;
+	color: #a2206e;
+	/* font-weight: bold; */
+}
+
+h3.ui-state-active {
+	cursor: default;
+	border-bottom: none !important;
+}
+
+div.ui-accordion-content {
+	padding: 15px;
+	border-bottom: 1px solid #666;
+
+}

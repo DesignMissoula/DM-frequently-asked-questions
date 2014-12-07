@@ -5,7 +5,7 @@ Plugin Name: Frequently Asked Questions
 Plugin URI: http://www.designmissoula.com/
 Description: Used by Millions to make WordPress better.
 Author: Bradford Knowlton
-Version: 2.1.1
+Version: 2.2.1
 Author URI: http://bradknowlton.com/
 GitHub Plugin URI: https://github.com/DesignMissoula/DM-frequently-asked-questions
 GitHub Branch: master
@@ -47,7 +47,7 @@ function register_cpt_frequently_asked_question() {
 		'rewrite' => false,
 		'capability_type' => 'post'
 	);
-	register_post_type( 'frequently_asked_question', $args );
+	register_post_type( 'faq', $args );
 
 	$labels = array(
 		'name' => _x( 'Frequently Asked Categories', 'frequently_asked_categories' ),
@@ -77,5 +77,57 @@ function register_cpt_frequently_asked_question() {
 		'rewrite' => false,
 		'query_var' => true
 	);
-	register_taxonomy( 'frequently_asked_categories', array('frequently_asked_question'), $args );
+	register_taxonomy( 'frequently_asked_categories', array('faq'), $args );
+	
+	
+	
+	function frequently_asked_question_func( $atts ) {
+	    $a = shortcode_atts( array(
+	        'category' => '',
+	    ), $atts );
+	    
+	    $args=array(
+		  'frequently_asked_categories' => $a['category'],
+		  'post_type' => 'faq',
+		  'post_status' => 'publish',
+		  'posts_per_page' => -1,
+		  // 'caller_get_posts'=> 1
+		);
+		$my_query = null;
+		$my_query = new WP_Query($args);
+		if( $my_query->have_posts() ) {
+		  $return = '<div id="accordion">';
+		  while ($my_query->have_posts()) : $my_query->the_post(); 
+		  	$return .=  "<h3>".get_the_title()."</h3>";
+		  	$return .=  "<div class='clearfix'>".get_the_content()."</div>";
+		  
+		    endwhile;
+		    $return .= '</div>';
+		    $return .= ' <script>
+							jQuery(function($) {
+							$( "#accordion" ).accordion({
+								heightStyle: "content"
+								});
+							});
+						</script>';
+		}
+		wp_reset_query(); 
+	    
+	
+	    return $return;
+	}
+	add_shortcode( 'faq', 'frequently_asked_question_func' );
+	
 } 
+
+
+function faq_scripts_method() {
+	if ( !is_admin() ) {
+		wp_enqueue_script('jquery-ui-accordion');
+		wp_enqueue_style('faq-style', plugins_url('css/style.css', __FILE__), array(), '1', 'screen'); 
+	}
+}
+
+add_action('wp_enqueue_scripts', 'faq_scripts_method');
+
+
