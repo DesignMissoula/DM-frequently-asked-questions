@@ -48,4 +48,34 @@ function register_cpt_frequently_asked_question() {
 		'capability_type' => 'post'
 	);
 	register_post_type( 'frequently_asked_question', $args );
+
+	$labels = array(
+		'name' => _x( 'Frequently Asked Categories', 'frequently_asked_categories' ),
+		'singular_name' => _x( 'Frequently Asked Category', 'frequently_asked_categories' ),
+		'search_items' => _x( 'Search Frequently Asked Categories', 'frequently_asked_categories' ),
+		'popular_items' => _x( 'Popular Frequently Asked Categories', 'frequently_asked_categories' ),
+		'all_items' => _x( 'All Frequently Asked Categories', 'frequently_asked_categories' ),
+		'parent_item' => _x( 'Parent Frequently Asked Category', 'frequently_asked_categories' ),
+		'parent_item_colon' => _x( 'Parent Frequently Asked Category:', 'frequently_asked_categories' ),
+		'edit_item' => _x( 'Edit Frequently Asked Category', 'frequently_asked_categories' ),
+		'update_item' => _x( 'Update Frequently Asked Category', 'frequently_asked_categories' ),
+		'add_new_item' => _x( 'Add New Frequently Asked Category', 'frequently_asked_categories' ),
+		'new_item_name' => _x( 'New Frequently Asked Category', 'frequently_asked_categories' ),
+		'separate_items_with_commas' => _x( 'Separate frequently asked categories with commas', 'frequently_asked_categories' ),
+		'add_or_remove_items' => _x( 'Add or remove frequently asked categories', 'frequently_asked_categories' ),
+		'choose_from_most_used' => _x( 'Choose from the most used frequently asked categories', 'frequently_asked_categories' ),
+		'menu_name' => _x( 'Frequently Asked Categories', 'frequently_asked_categories' ),
+	);
+	$args = array(
+		'labels' => $labels,
+		'public' => true,
+		'show_in_nav_menus' => false,
+		'show_ui' => true,
+		'show_tagcloud' => false,
+		'show_admin_column' => true,
+		'hierarchical' => true,
+		'rewrite' => false,
+		'query_var' => true
+	);
+	register_taxonomy( 'frequently_asked_categories', array('frequently_asked_question'), $args );
 } 
